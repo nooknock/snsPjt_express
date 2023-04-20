@@ -38,7 +38,7 @@ app.use(
 // app.use(bodyParser.raw());
 // app.use(bodyParser.text());
 
-app.use(logger('dev')); //'dev' 외에도 combined, common, short, tiny등을 넣을 수 있습니다. //개발환경에서는 dev, 배포 환경에서는 combined
+app.use(logger('dev')); //'dev' 외에도 combined, common, short, tiny등을 넣을 수 있습니다. //개발환경에서는 dev, 배포 환경에서는 combined //
 app.use(express.json()); //json 형식의 데이터 전달 방식
 app.use(express.urlencoded({ extended: false })); //주소 형식으로 데이터를 보내는 방식, { extended: false } 옵션이 false면 노드의 querystring 모듈을 사용하여 쿼리 스트링을 해석하고, true면 qs 모듈을 사용하여 쿼리 스트링을 해석함, qs 모듈은 내장 모듈이 아니라 npm 패키지이면 querystring 모듈의 기능을 좀 더 확장한 모듈
 app.use(cookieParser());
