@@ -1,13 +1,16 @@
-var express = require('express');
-const path = require("path");
-var router = express.Router();
+const express = require('express');
+const User = require('../models/user');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  // res.render('index', { title: 'hi23' });
+const router = express.Router();
 
-  res.sendFile(path.join(__dirname,'/hello.html'))
+router.get('/', async (req, res, next) => {
+  try {
+    const users = await User.findAll();
+    res.render('sequelize', { users });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
 });
 
 module.exports = router;
-

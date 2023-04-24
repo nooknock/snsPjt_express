@@ -4,21 +4,21 @@ const path = require('path');
 // var cookieParser = require('cookie-parser');
 // const session=require('express-session');
 // const dotenv=require('dotenv'); // .env파일을 읽어서 process.env로 만듭니다.
-const logger = require('morgan');
+const morgan = require('morgan');
 // const bodyParser=require('body-parser'); //요청의 본문에 있는 데이터를 해석해서 req.body 객체로 만들어 주는 미들웨어, 보통 폼 데이터나 AJAX 요청의 데이터를 처리, 단 멀티파트(이미지, 동영상, 파일) 데이터는 처리하지 못 한다. 그 경우에는 multer 모듈을 사용하면 됨
 const nunjucks=require('nunjucks'); //퍼그의 HTML 문법 변화에 적용하기 힘든분에게 적합한 템플릿 엔진, HTML 문법을 그대로 사용, 자바스크립트 문법 사용, 파이썬의 템플릿 엔진인 Twig와 문법이 상당히 유사
 
 const {sequelize}=require('./models')
-// var indexRouter = require('./routes');
-// var usersRouter = require('./routes/users');
-// const commentsRouter=require('./routes/comments')
+const indexRouter = require('./routes');
+const usersRouter = require('./routes/users');
+const commentsRouter=require('./routes/comments')
 
 
 
 
 // dotenv.config();
 
-var app = express(); // 익스프레스 내부에 http 모듈이 내장되어 있으므로 서버로의 역할을 함
+const app = express(); // 익스프레스 내부에 http 모듈이 내장되어 있으므로 서버로의 역할을 함
 
 app.set('port',process.env.PORT || 3001);
 
@@ -60,13 +60,15 @@ sequelize.sync({force:false}) //true로 설정하면 서버 실행시마다 테�
 // app.use(bodyParser.raw());
 // app.use(bodyParser.text());
 
-app.use(logger('dev')); //'dev' 외에도 combined, common, short, tiny등을 넣을 수 있습니다. //개발환경에서는 dev, 배포 환경에서는 combined //
+app.use(morgan('dev')); //'dev' 외에도 combined, common, short, tiny등을 넣을 수 있습니다. //개발환경에서는 dev, 배포 환경에서는 combined //
 app.use(express.json()); //json 형식의 데이터 전달 방식
 app.use(express.urlencoded({ extended: false })); //주소 형식으로 데이터를 보내는 방식, { extended: false } 옵션이 false면 노드의 querystring 모듈을 사용하여 쿼리 스트링을 해석하고, true면 qs 모듈을 사용하여 쿼리 스트링을 해석함, qs 모듈은 내장 모듈이 아니라 npm 패키지이면 querystring 모듈의 기능을 좀 더 확장한 모듈
 // app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))); //static 미들웨어는 정적인 파일들을 제공하는 라우터 역할
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/comments',commentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -74,6 +76,11 @@ app.use(function(req, res, next) {
     error.status=404;
   next(error);
 });
+
+
+
+
+
 
 // error handler 에러 처리 미들웨어, 모든 매개변수를 사용하지 않더라도 매개변수가 반드시 네 개여야 함
 // err는 에러에 관한 정보가 담겨 있다.
